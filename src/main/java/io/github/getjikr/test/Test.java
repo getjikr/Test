@@ -22,17 +22,12 @@ public final class Test extends JavaPlugin {
     public void onEnable() {
         getLogger().info("PO");
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            commands.registrar().register(this.giveDiamondCommand());
+            commands.registrar().register(GiveDiamondCommand.create());
+            commands.registrar().register(GiveDiamondSwordCommand.create());
+            commands.registrar().register(NameSuggestionTest.constructStringSuggestion());
             commands.registrar().register(this.setFlySpeedCommand());
         });
 
-    }
-
-    private LiteralCommandNode<CommandSourceStack> giveDiamondCommand() {
-        return Commands.literal("givediamond")
-                .then(Commands.argument("amount", IntegerArgumentType.integer(1, 64))
-                        .executes(this::giveDiamondLogic)
-                ).build();
     }
 
     private LiteralCommandNode<CommandSourceStack> setFlySpeedCommand() {
@@ -52,13 +47,4 @@ public final class Test extends JavaPlugin {
                 ).build();
     }
 
-    private int giveDiamondLogic(CommandContext<CommandSourceStack> ctx) {
-        if (ctx.getSource().getExecutor() instanceof Player player) {
-            int amount = ctx.getArgument("amount", Integer.class);
-            ItemStack diamonds = new ItemStack(Material.DIAMOND, amount);
-            player.getInventory().addItem(diamonds);
-            player.sendMessage(Component.text(amount + "개의 다이아몬드를 받았습니다").color(NamedTextColor.GREEN));
-        }
-        return Command.SINGLE_SUCCESS;
-    }
 }
